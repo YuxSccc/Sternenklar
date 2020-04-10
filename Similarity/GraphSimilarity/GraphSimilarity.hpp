@@ -1,0 +1,14 @@
+//
+// Created by meternal on 4/7/20.
+//
+
+#ifndef CODESIMILARITY_GRAPHSIMILARITY_HPP
+#define CODESIMILARITY_GRAPHSIMILARITY_HPP
+
+
+class GraphSimilarity {
+
+};
+
+
+#endif //CODESIMILARITY_GRAPHSIMILARITY_HPP
