@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <memory>
+#include <cassert>
 
 using std::vector;
 using std::string;

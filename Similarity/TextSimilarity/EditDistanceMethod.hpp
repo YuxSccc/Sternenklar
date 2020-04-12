@@ -7,6 +7,8 @@
 
 #include "Similarity/TextSimilarity/TextSimilarity.hpp"
 
+#include "Similarity/utils/KuhnMunkres.hpp"
+
 class EditDistanceMethod : public TextSimilarity {
     double Calculate(const Node &, const Node &) override {
 
