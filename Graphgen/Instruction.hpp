@@ -30,7 +30,21 @@ public:
     explicit Instruction(const llvm::Instruction &ins);
 
     ~Instruction() = default;
+
+public:
+    inline Type getType() const { return _type; };
+
+    inline size_t paramSize() const { return _params.size(); }
+
+    const Value &getParam(size_t _index) const;
+
+    vector<Value> getParamsCopy() const {
+        return vector<Value>(_params);
+    }
+
 };
+
+//----------------------------------------------------------------------------------------------------
 
 Instruction::Instruction(const llvm::Instruction &ins) {
     _type = Type::Unknown;
@@ -41,7 +55,9 @@ Instruction::Instruction(const llvm::Instruction &ins) {
     }
 }
 
-//----------------------------------------------------------------------------------------------------
-
+const Value &Instruction::getParam(size_t _index) const {
+    assert(_index < _params.size());
+    return _params[_index];
+}
 
 #endif //CODESIMILARITY_INSTRUCTION_HPP

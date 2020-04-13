@@ -7,12 +7,19 @@
 
 #include "CodeSimilariry.h"
 
+#include "Similarity/TextSimilarity/TextSimilarity.hpp"
 #include "Similarity/utils/picosha2.hpp"
+#include "Similarity/utils/EditDistance.hpp"
 
-class SimHash {
+class SimHashMethod : public TextSimilarity {
 
-    int gao() {
+
+
+public:
+    double Calculate(const Node &, const Node &) override {
+
     }
+
 };
 
 

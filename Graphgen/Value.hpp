@@ -23,14 +23,23 @@ public:
 private:
     Value::Type _type;
     std::string _name;
+
+private:
     int _weight;
     bool _hasName;
-public:
 
+public:
+    bool operator==(const Value &_rhs) const;
+
+public:
     Value(llvm::Value *val, int weight);
 
     const std::string &getName() const { return _name; }
+
+    Type getType() const { return _type; }
+
 };
+
 
 Value::Value(llvm::Value *val, int weight) {
     _weight = weight;
@@ -44,6 +53,10 @@ Value::Value(llvm::Value *val, int weight) {
     else _type = Type::Unknown;
     _hasName = val->hasName();
     if (val->hasName()) _name = val->getName().data();
+}
+
+bool Value::operator==(const Value &_rhs) const {
+    return _type == _rhs._type && _name == _rhs._name;
 }
 
 #endif //CODESIMILARITY_VALUE_HPP
