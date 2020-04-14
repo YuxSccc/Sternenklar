@@ -19,15 +19,22 @@ public:
         ERROR
     };
 
+public:
     Node() = default;
 
     explicit Node(vector<Instruction *> &ins);
 
+    Instruction *&operator[](int _index) { return _ins[_index]; }
+
     ~Node();
 
-    int initNode(vector<Instruction *> &ins);
+public:
 
-private:
+    size_t size() const { return _ins.size(); }
+
+    Instruction *getIns(int _index) const { return _ins[_index]; }
+
+    int initNode(vector<Instruction *> &ins);
 
 };
 

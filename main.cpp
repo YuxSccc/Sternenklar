@@ -9,6 +9,6 @@
 int main() {
     std::cout << "Hello, World!" << std::endl;
     Graph t;
-    EditDistenceMethod tt;
+    EditDistanceMethod tt;
     return 0;
 }

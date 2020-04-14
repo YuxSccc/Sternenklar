@@ -159,7 +159,7 @@ private:
         return sumMatchWeight;
     }
 
-    double _PreMatch(uint32_t _leftCount, uint32_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
+    double _PreMatch(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
                      const vector<double> &_edgeWeight, vector<int> &_leftMatch) {
         {
             vector<KM_Node> tempa, tempb;
@@ -196,12 +196,12 @@ private:
     }
 
 public:
-    double Match(uint32_t _leftCount, uint32_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
+    double Match(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
                  const vector<double> &_edgeWeight, vector<int> &_leftMatch) {
         return _PreMatch(_leftCount, _rightCount, _edgeIndex, _edgeWeight, _leftMatch);
     }
 
-    double Match(uint32_t _leftCount, uint32_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
+    double Match(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
                  const vector<double> &_edgeWeight) {
         vector<int> temp;
         return _PreMatch(_leftCount, _rightCount, _edgeIndex, _edgeWeight, temp);

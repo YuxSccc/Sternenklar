@@ -12,14 +12,10 @@
 #include "Similarity/utils/EditDistance.hpp"
 
 class SimHashMethod : public TextSimilarity {
-
-
-
 public:
     double Calculate(const Node &, const Node &) override {
 
     }
-
 };
 
 

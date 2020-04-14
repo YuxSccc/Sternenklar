@@ -7,11 +7,12 @@
 
 #include "Similarity/TextSimilarity/TextSimilarity.hpp"
 
-#include "Similarity/utils/KuhnMunkres.hpp"
+#include "Similarity/utils/EditDistance.hpp"
 
 class EditDistanceMethod : public TextSimilarity {
-    double Calculate(const Node &, const Node &) override {
-
+    double Calculate(const Node &_lhs, const Node &_rhs) override {
+        EditDistance _editDistance;
+        return _editDistance.getDistance(_lhs, _rhs);
     }
 };
 

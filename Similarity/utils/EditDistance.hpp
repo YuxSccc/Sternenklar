@@ -8,16 +8,19 @@
 #include "CodeSimilariry.h"
 
 #include "Graphgen/Node.hpp"
+#include "Similarity/utils/KuhnMunkres.hpp"
 
 #include <map>
 #include <algorithm>
 
 class EditDistance {
-    static constexpr double nornalize_dp_param = 0.02;
+    // strengthen by each Ins/param
+    static constexpr double normalize_dp_param = 0.02;
+    static constexpr double normalize_KMnode = 0.02;
 private:
-    std::map<Instruction::Type, std::map<Instruction::Type, double>> _typeMatric;
-    std::map<Value::Type, std::map<Value::Type, double>> _valueMatric;
-    std::map<Value::Type, double> _delCost;
+    static const std::map<Instruction::Type, std::map<Instruction::Type, double>> _typeMatric;
+    static const std::map<Value::Type, std::map<Value::Type, double>> _valueMatric;
+    static const std::map<Value::Type, double> _delCost;
 
 private:
     double _TypeDistance(const Instruction &, const Instruction &) const;
@@ -25,19 +28,35 @@ private:
     double _ParamDistance(const Instruction &, const Instruction &) const;
 
 public:
-    EditDistance() {
-        // TODO: matric init...
-        _typeMatric[Instruction::Type::CallInst][Instruction::Type::ArithInst] = 0;
-    }
+    EditDistance() = default;
 
-    double DistanceBetweenInstruction(const Instruction &, const Instruction &) const;
+    double getDistance(const Instruction &, const Instruction &) const;
+
+    double getDistance(const Node &, const Node &) const;
 
 };
 
-double EditDistance::DistanceBetweenInstruction(const Instruction &_lhs, const Instruction &_rhs) const {
+double EditDistance::getDistance(const Instruction &_lhs, const Instruction &_rhs) const {
     const double _OpeSimilarity = _TypeDistance(_lhs, _rhs);
     const double _ParamSimilarity = _ParamDistance(_lhs, _rhs);
+    // TODO: should add weight compensation to _ParamSimilarity
     return _OpeSimilarity * _ParamSimilarity;
+}
+
+double EditDistance::getDistance(const Node &_lhs, const Node &_rhs) const {
+    vector<double> _weight;
+    vector<std::pair<int, int>> _edge;
+    for (int i = 0; i < _lhs.size(); ++i) {
+        for (int j = 0; j < _rhs.size(); ++j) {
+            _edge.emplace_back(std::make_pair(i, j));
+            _weight.push_back(getDistance(*_lhs.getIns(i), *_rhs.getIns(j)));
+        }
+    }
+    KuhnMunkres _km;
+    size_t _maxInsCount = std::max(_lhs.size(), _rhs.size());
+    // TODO: choose better normalize function
+    return _km.Match(_lhs.size(), _rhs.size(), _edge, _weight)
+           / _maxInsCount * (normalize_KMnode * _maxInsCount + 1);
 }
 
 double EditDistance::_TypeDistance(const Instruction &_lhs, const Instruction &_rhs) const {
@@ -97,7 +116,21 @@ double EditDistance::_ParamDistance(const Instruction &_lhs, const Instruction &
         }
     }
     // TODO: choose better normalize function
-    return _dp[_lhsParams.size()][_rhsParams.size()][0] / _rhsParams.size() * (1 + nornalize_dp_param * _rhsParams.size());
+    return _dp[_lhsParams.size()][_rhsParams.size()][0] / _rhsParams.size() *
+           (1 + normalize_dp_param * _rhsParams.size());
 }
+
+const std::map<Instruction::Type, std::map<Instruction::Type, double>> EditDistance::_typeMatric = {
+        // TODO: matric init...
+        // TODO: handle undefined Type
+};
+
+const std::map<Value::Type, std::map<Value::Type, double>> EditDistance::_valueMatric = {
+        // TODO: matric init...
+};
+
+const std::map<Value::Type, double> EditDistance::_delCost = {
+        // TODO: matric init...
+};
 
 #endif //CODESIMILARITY_EDITDISTANCE_HPP
