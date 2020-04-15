@@ -13,6 +13,7 @@ include_directories(
 
 add_subdirectory(Graphgen)
 add_subdirectory(Similarity)
+add_subdirectory(Admin)
 
 link_directories(/usr/lib/llvm-9/)
 

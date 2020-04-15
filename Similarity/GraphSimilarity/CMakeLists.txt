@@ -1,3 +1,3 @@
-set(SOURCE GraphSimilarity.hpp)
+set(SOURCE GraphSimilarity.hpp GSSM.cpp)
 
-# add_library(GraphSimilarity ${SOURCE})
+add_library(GraphSimilarity ${SOURCE})

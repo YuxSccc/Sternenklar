@@ -10,6 +10,8 @@
 
 #include <unordered_map>
 #include <queue>
+#include <map>
+#include <algorithm>
 
 class Graph;
 
@@ -32,7 +34,28 @@ public:
 
     ~Graph();
 
+public:
+    size_t size() const { return _nodes.size(); }
+
     int initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges);
+
+    vector<std::pair<int, int>> GetCurrentIndexEdge() const {
+        // Not Safe
+        vector<std::pair<int, int>> _edgePair;
+        std::map<Node *, int> _indexMap;
+        for (int i = 0; i < _nodes.size(); ++i) {
+            _indexMap[_nodes[i]] = i;
+        }
+        for (auto &it : _nodes) {
+            auto _ENode = _edges.find(it);
+            if (_ENode != _edges.end()) {
+                for (auto &terminal : _ENode->second) {
+                    _edgePair.emplace_back(std::make_pair(_indexMap[it], _indexMap[terminal]));
+                }
+            }
+        }
+        return _edgePair;
+    }
 
 private:
     int isInvalid() const;

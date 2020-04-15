@@ -9,8 +9,6 @@
 
 #include "Graphgen/Node.hpp"
 
-#include "Eigen/Dense"
-
 class TextSimilarity {
 public:
     virtual double Calculate(const Node &, const Node &) = 0;
