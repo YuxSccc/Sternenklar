@@ -24,6 +24,7 @@ namespace ster {
                 break;
             }
         }
+        std::cout << *_PointMat << std::endl;
     }
 
     void GSSM::_InitMatStatus(GSSM::matrixPtr &_initPointMat) {
@@ -53,8 +54,6 @@ namespace ster {
         *_TempPointMat = (*_SourceMatB) * (*_EdgeMat) * _SourceMatA->transpose()
                          + (*_TerminalMatB) * (*_EdgeMat) * _TerminalMatA->transpose();
         _PointMat->swap(*_TempPointMat);
-        std::cout << *_PointMat << std::endl;
-        std::cout << *_EdgeMat << std::endl;
     }
 
     void GSSM::_ParseGraphAndAllocaMat() {

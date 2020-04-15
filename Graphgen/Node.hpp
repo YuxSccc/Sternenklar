@@ -14,7 +14,7 @@ namespace ster {
     class Node {
     private:
         vector<Instruction *> _ins;
-
+        std::string _name;
     public:
         enum message {
             SUCCESS,
@@ -24,7 +24,7 @@ namespace ster {
     public:
         Node() = default;
 
-        inline explicit Node(vector<Instruction *> &ins);
+        inline explicit Node(vector<Instruction *> &ins, string &_tName);
 
         Instruction *&operator[](int _index) { return _ins[_index]; }
 
@@ -48,8 +48,9 @@ namespace ster {
         }
     }
 
-    Node::Node(vector<Instruction *> &ins) {
+    Node::Node(vector<Instruction *> &ins, string &_tName) {
         initNode(ins);
+        _name = _tName;
     }
 
     int Node::initNode(vector<Instruction *> &ins) {

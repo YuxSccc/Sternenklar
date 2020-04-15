@@ -49,12 +49,16 @@ namespace ster {
                     Filter->Filter(insList);
                 }
                 if (insList.empty())continue;
-                Graph_nodes.push_back(new Node(insList));
+
+                // debug code
+                string _temp;
+                llvm::raw_string_ostream rso(_temp);
+                BB.print(rso);
+
+                Graph_nodes.push_back(new Node(insList, _temp));
                 _tempBBMap[&BB] = *Graph_nodes.rbegin();
             }
         }
-
-        //
 
         for (llvm::Function &F : *M) {
             for (llvm::BasicBlock &BB: F) {
