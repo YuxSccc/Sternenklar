@@ -3,6 +3,8 @@ project(CodeSimilarity)
 
 set(CMAKE_CXX_STANDARD 17)
 
+add_compile_options(-Wall)
+
 include_directories(
         .
         ./include
@@ -21,4 +23,6 @@ add_executable(CodeSimilarity main.cpp)
 
 target_link_libraries(CodeSimilarity
         LLVM-9
+        Graphgen
+        Similarity
         )

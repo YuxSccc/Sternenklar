@@ -9,14 +9,15 @@
 
 #include <Graphgen/Instruction.hpp>
 
-class GenFilter;
+namespace ster {
+    class GenFilter;
 
-REGISTER_PTR(GenFilter);
+    REGISTER_PTR(GenFilter);
 
-class GenFilter {
-public:
-    virtual int Filter(vector<Instruction *> fil) = 0;
-};
-
+    class GenFilter {
+    public:
+        virtual int Filter(vector<Instruction *> fil) = 0;
+    };
+}
 
 #endif //CODESIMILARITY_GENFILTER_H

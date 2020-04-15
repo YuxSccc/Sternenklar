@@ -8,51 +8,55 @@
 #include "Similarity/GraphSimilarity/GraphSimilarity.hpp"
 #include "Eigen/Dense"
 
-class GSSM : public GraphSimilarity {
-    using matrix = Eigen::Matrix2d;
-    using matrixPtr = std::shared_ptr<matrix>;
-    static constexpr double DEFAULT_CONVERGE_LIMIT = 0.03;
-    static const int DEFAULT_CONVERGE_INTERVAL = 20;
-    static const int DEFAULT_ITERATION_LIMIT = 1000;
-    static constexpr double EPS = 0.0000001;
-private:
-    GraphPtr _GraphA;
-    GraphPtr _GraphB;
+namespace ster {
 
-    matrixPtr _PointMat;
-    matrixPtr _EdgeMat;
+    class GSSM : public GraphSimilarity {
+        static constexpr double DEFAULT_CONVERGE_LIMIT = 0.001;
+        static const int DEFAULT_CONVERGE_INTERVAL = 20;
+        static const int DEFAULT_ITERATION_LIMIT = 1000;
+        static constexpr double EPS = 0.0001;
+    private:
+        GraphPtr _GraphA;
+        GraphPtr _GraphB;
 
-    matrixPtr _SourceMatA;
-    matrixPtr _TerminalMatA;
-    matrixPtr _SourceMatB;
-    matrixPtr _TerminalMatB;
+        matrixPtr _PointMat;
+        matrixPtr _EdgeMat;
 
-    matrixPtr _TempPointMat;
-    matrixPtr _TempEdgeMat;
-private:
-    void _Match(matrixPtr &_initPointMat, uint32_t _maxIteration,
-                uint32_t _convergeCheckInterval = DEFAULT_CONVERGE_INTERVAL,
-                double _convergeValue = DEFAULT_CONVERGE_LIMIT);
+        matrixPtr _SourceMatA;
+        matrixPtr _TerminalMatA;
+        matrixPtr _SourceMatB;
+        matrixPtr _TerminalMatB;
 
-    void _InitMatStatus(matrixPtr &_initPointMat);
+        matrixPtr _TempPointMat;
+        matrixPtr _TempEdgeMat;
+    private:
+        void _Match(matrixPtr &_initPointMat, uint32_t _maxIteration,
+                    uint32_t _convergeCheckInterval = DEFAULT_CONVERGE_INTERVAL,
+                    double _convergeValue = DEFAULT_CONVERGE_LIMIT);
 
-    void _ParseGraphAndAllocaMat();
+        void _InitMatStatus(matrixPtr &_initPointMat);
 
-    void _RunIterator();
+        void _ParseGraphAndAllocaMat();
 
-    bool _IsConverge(double _convergeValue) const;
+        void _RunIterator();
 
-public:
-    GSSM(GraphPtr &_GA, GraphPtr &_GB) {
-        _GraphA = _GA;
-        _GraphB = _GB;
-        _ParseGraphAndAllocaMat();
-    }
+        bool _IsConverge(double _convergeValue) const;
 
-public:
-    matrix match() override;
+        void _FrobeniusNormalization(matrixPtr _mat);
 
-};
+        void _Normalization();
 
+    public:
+        GSSM(GraphPtr &_GA, GraphPtr &_GB) {
+            _GraphA = _GA;
+            _GraphB = _GB;
+            _ParseGraphAndAllocaMat();
+        }
+
+    public:
+        matrix match() override;
+
+    };
+}
 
 #endif //CODESIMILARITY_GSSM_H

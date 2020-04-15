@@ -10,16 +10,17 @@
 
 #include "Graphgen/GenFilter/GenFilter.h"
 
-class Graphgen {
-private:
-    vector<GenFilterPtr> _Filters;
+namespace ster {
+    class Graphgen {
+    private:
+        vector<GenFilterPtr> _Filters;
 
-public:
-    int addFliter(GenFilterPtr ptr);
+    public:
+        int addFliter(GenFilterPtr ptr);
 
-    int removeFliter(int index);
+        int removeFliter(size_t index);
 
-    GraphPtr gen(string filename) const;
-};
-
+        GraphPtr gen(string filename) const;
+    };
+}
 #endif //CODESIMILARITY_GRAPHGEN_H

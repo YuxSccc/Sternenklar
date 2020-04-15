@@ -2,8 +2,6 @@
 // Created by meternal on 4/3/20.
 //
 
-#include "Eigen/Dense"
-
 #include "Graphgen.h"
 
 #include "llvm/IR/Module.h"
@@ -15,43 +13,71 @@
 
 #include <unordered_map>
 
-int Graphgen::addFliter(GenFilterPtr ptr) {
-    _Filters.push_back(ptr);
-}
+#include "Eigen/Dense"
 
-GraphPtr Graphgen::gen(string filename) const {
-    GraphPtr graph;
-    // TODO: file class?
-
-    llvm::SMDiagnostic Err;
-    llvm::LLVMContext Context;
-    // Parse the input LLVM IR file into a module.
-    std::unique_ptr<llvm::Module> Mod(parseIRFile(filename.c_str(), Err, Context));
-    llvm::Module *M = Mod.get();
-
-    Node *Graph_entry = nullptr;
-    vector<Node *> Graph_nodes;
-    std::unordered_map<Node *, vector<Node *>> Graph_edges;
-
-    // main process
-    // TODO: error handle
-    for (llvm::Function &F : *M) {
-        for (llvm::BasicBlock &BB: F) {
-            vector<Instruction *> insList;
-            for (llvm::Instruction &I : BB) {
-                insList.push_back(new Instruction(I));
-            }
-            for (const GenFilterPtr &Filter : _Filters) {
-                Filter->Filter(insList);
-            }
-            Graph_nodes.push_back(new Node(insList));
-        }
+namespace ster {
+    int Graphgen::addFliter(GenFilterPtr ptr) {
+        _Filters.push_back(ptr);
+        return 0;
     }
-    graph->initGraph(Graph_entry, Graph_nodes, Graph_edges);
-    return graph;
-}
 
-int Graphgen::removeFliter(int index) {
-    assert(index < _Filters.size());
-    _Filters.erase(_Filters.begin() + index);
+    GraphPtr Graphgen::gen(string filename) const {
+        GraphPtr graph(new Graph());
+        // TODO: file class?
+
+        llvm::SMDiagnostic Err;
+        llvm::LLVMContext Context;
+        // Parse the input LLVM IR file into a module.
+        std::unique_ptr<llvm::Module> Mod(parseIRFile(filename.c_str(), Err, Context));
+        if (!Mod) return nullptr;
+        llvm::Module *M = Mod.get();
+
+        Node *Graph_entry = nullptr;
+        vector<Node *> Graph_nodes;
+        std::unordered_map<Node *, vector<Node *>> Graph_edges;
+        std::unordered_map<llvm::BasicBlock *, Node *> _tempBBMap;
+
+        // main process
+        // TODO: error handle
+        for (llvm::Function &F : *M) {
+            for (llvm::BasicBlock &BB: F) {
+                vector<Instruction *> insList;
+                for (llvm::Instruction &I : BB) {
+                    insList.push_back(new Instruction(I));
+                }
+                for (const GenFilterPtr &Filter : _Filters) {
+                    Filter->Filter(insList);
+                }
+                if (insList.empty())continue;
+                Graph_nodes.push_back(new Node(insList));
+                _tempBBMap[&BB] = *Graph_nodes.rbegin();
+            }
+        }
+
+        //
+
+        for (llvm::Function &F : *M) {
+            for (llvm::BasicBlock &BB: F) {
+                auto _currBBNodeIter = _tempBBMap.find(&BB);
+                if (_currBBNodeIter == _tempBBMap.end()) continue;
+                auto _currBBNode = _currBBNodeIter->second;
+                for (llvm::BasicBlock *succPtr : llvm::successors(&BB)) {
+                    auto _currSuccBBNodeIter = _tempBBMap.find(succPtr);
+                    if (_currSuccBBNodeIter == _tempBBMap.end()) continue;
+                    auto _currSuccBBNode = _currSuccBBNodeIter->second;
+                    Graph_edges[_currBBNode].push_back(_currSuccBBNode);
+                }
+            }
+        }
+
+        Graph_entry = Graph_nodes[0];
+        graph->initGraph(Graph_entry, Graph_nodes, Graph_edges);
+        return graph;
+    }
+
+    int Graphgen::removeFliter(size_t index) {
+        assert(index < _Filters.size());
+        _Filters.erase(_Filters.begin() + index);
+        return 0;
+    }
 }

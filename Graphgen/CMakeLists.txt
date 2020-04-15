@@ -1,5 +1,4 @@
-set(SOURCE
-        Graphgen.cpp)
+set(SOURCE Graphgen.cpp)
 
 add_subdirectory(GenFilter)
 

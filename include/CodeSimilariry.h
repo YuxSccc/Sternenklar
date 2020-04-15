@@ -10,6 +10,8 @@
 #include <memory>
 #include <cassert>
 
+#include <iostream>
+
 using std::vector;
 using std::string;
 

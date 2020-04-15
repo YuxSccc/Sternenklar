@@ -10,54 +10,55 @@
 
 #include "llvm/IR/Instruction.h"
 
-class Instruction {
-public:
-    enum class Type {
-        CallInst,
-        ArithInst,
-        BrInst,
-        Unknown
+namespace ster {
+    class Instruction {
+    public:
+        enum class Type {
+            CallInst,
+            ArithInst,
+            BrInst,
+            Unknown
+        };
+
+    private:
+        Type _type;
+        vector<Value> _params;
+        std::string _llvm_name;
+
+    public:
+        Instruction() = default;
+
+        inline explicit Instruction(const llvm::Instruction &ins);
+
+        ~Instruction() = default;
+
+    public:
+        Type getType() const { return _type; };
+
+        size_t paramSize() const { return _params.size(); }
+
+        inline const Value &getParam(size_t _index) const;
+
+        vector<Value> getParamsCopy() const {
+            return vector<Value>(_params);
+        }
+
     };
-
-private:
-    Type _type;
-    vector<Value> _params;
-    std::string _llvm_name;
-
-public:
-    Instruction() = default;
-
-    explicit Instruction(const llvm::Instruction &ins);
-
-    ~Instruction() = default;
-
-public:
-    inline Type getType() const { return _type; };
-
-    inline size_t paramSize() const { return _params.size(); }
-
-    const Value &getParam(size_t _index) const;
-
-    vector<Value> getParamsCopy() const {
-        return vector<Value>(_params);
-    }
-
-};
 
 //----------------------------------------------------------------------------------------------------
 
-Instruction::Instruction(const llvm::Instruction &ins) {
-    _type = Type::Unknown;
-    llvm::raw_string_ostream rso(_llvm_name);
-    ins.print(rso);
-    for (unsigned int i = 0; i < ins.getNumOperands(); ++i) {
-        _params.emplace_back(Value(ins.getOperand(i), 1));
+    Instruction::Instruction(const llvm::Instruction &ins) {
+        _type = Type::Unknown;
+        llvm::raw_string_ostream rso(_llvm_name);
+        ins.print(rso);
+        for (unsigned int i = 0; i < ins.getNumOperands(); ++i) {
+            _params.emplace_back(Value(ins.getOperand(i), 1));
+        }
+    }
+
+    const Value &Instruction::getParam(size_t _index) const {
+        assert(_index < _params.size());
+        return _params[_index];
     }
 }
-
-const Value &Instruction::getParam(size_t _index) const {
-    assert(_index < _params.size());
-    return _params[_index];
-}
-
 #endif //CODESIMILARITY_INSTRUCTION_HPP

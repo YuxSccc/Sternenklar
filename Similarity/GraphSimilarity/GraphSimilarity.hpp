@@ -12,7 +12,10 @@
 
 class GraphSimilarity {
 public:
-    virtual Eigen::Matrix2d match() = 0;
+    using matrix = Eigen::MatrixXd;
+    using matrixPtr = std::shared_ptr<matrix>;
+
+    virtual matrix match() = 0;
 };
 
 
