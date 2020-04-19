@@ -43,7 +43,11 @@ namespace ster {
             for (llvm::BasicBlock &BB: F) {
                 vector<Instruction *> insList;
                 for (llvm::Instruction &I : BB) {
-                    insList.push_back(new Instruction(I));
+                    if (llvm::DILocation *Loc = I.getDebugLoc()) {
+                        if (Loc->getFilename() == M->getSourceFileName()) {
+                            insList.push_back(new Instruction(I));
+                        }
+                    }
                 }
                 for (const GenFilterPtr &Filter : _Filters) {
                     Filter->Filter(insList);

@@ -1,4 +1,3 @@
-set(SOURCE
-        GenFilter.cpp)
+set(SOURCE GenFilter.cpp DebugInstructionFilter.cpp)
 
 add_library(GenFilter ${SOURCE})

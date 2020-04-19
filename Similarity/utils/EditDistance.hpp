@@ -24,20 +24,20 @@ namespace ster {
         static const double _DeleteValueCost[magic_enum::enum_count<Value::Type>()];
 
     private:
-        double _TypeDistance(const Instruction, const Instruction) const;
+        double _TypeDistance(const Instruction &, const Instruction &) const;
 
-        double _ParamDistance(const Instruction, const Instruction) const;
+        double _ParamDistance(const Instruction &, const Instruction &) const;
 
     public:
         EditDistance() = default;
 
-        double getDistance(const Instruction, const Instruction) const;
+        double getDistance(const Instruction &, const Instruction &) const;
 
         double getDistance(const Node &, const Node &) const;
 
     };
 
-    double EditDistance::getDistance(const Instruction _lhs, const Instruction _rhs) const {
+    double EditDistance::getDistance(const Instruction &_lhs, const Instruction &_rhs) const {
         double _OpeSimilarity = _TypeDistance(_lhs, _rhs);
         double _ParamSimilarity = _ParamDistance(_lhs, _rhs);
         // TODO: should add weight compensation to _ParamSimilarity
@@ -60,7 +60,7 @@ namespace ster {
                / _maxInsCount * (normalize_KMnode * _maxInsCount + 1);
     }
 
-    double EditDistance::_TypeDistance(const Instruction _lhs, const Instruction _rhs) const {
+    double EditDistance::_TypeDistance(const Instruction &_lhs, const Instruction &_rhs) const {
         const Instruction::Type typeA = _lhs.getType();
         const Instruction::Type typeB = _rhs.getType();
         if (typeA != Instruction::Type::CallInst || typeB != Instruction::Type::CallInst) {
@@ -69,10 +69,10 @@ namespace ster {
         // both call instruction, need to check called function
         // TODO: more detailed detection (e.g push_back and emplace_back)
         // TODO: declare getCallfunction()
-        return _lhs.getParam(1) == _rhs.getParam(1);
+        return _lhs.getParam(0) == _rhs.getParam(0);
     }
 
-    double EditDistance::_ParamDistance(const Instruction _lhs, const Instruction _rhs) const {
+    double EditDistance::_ParamDistance(const Instruction &_lhs, const Instruction &_rhs) const {
         // TODO: performance problem (need to save pointer in params)
         vector<Value> _lhsParams = _lhs.getParamsCopy();
         vector<Value> _rhsParams = _rhs.getParamsCopy();
@@ -84,17 +84,17 @@ namespace ster {
         if (_lhsParams.size() > _rhsParams.size()) _lhsParams.swap(_rhsParams);
 
         vector<vector<vector<double>>> _dp;
-        uint32_t _delCount = (uint32_t) abs((int) _lhsParams.size() - (int) _rhsParams.size()) + 1;
+        uint32_t _delCount = (uint32_t) abs((int) _lhsParams.size() - (int) _rhsParams.size());
         // Gen dp[l.size][r.size][delCount]
 
         const double dp_INIT = 1e20;
         _dp.resize(_lhsParams.size() + 1,
                    vector<vector<double>>(_rhsParams.size() + 1,
-                                          vector<double>(_delCount, dp_INIT)));
+                                          vector<double>(_delCount + 1, dp_INIT)));
         _dp[0][0][_delCount] = 0;
         for (size_t i = 0; i <= _lhsParams.size(); ++i) {
             for (size_t j = 0; j <= _rhsParams.size(); ++j) {
-                for (size_t k = 0; k < _delCount; ++k) {
+                for (size_t k = 0; k <= _delCount; ++k) {
                     if (k && j < _rhsParams.size()) {
                         // Delete _rhsParams[j]
                         _dp[i][j + 1][k - 1] = std::min(_dp[i][j + 1][k - 1], _dp[i][j][k] +

@@ -9,7 +9,12 @@
 #include <string>
 #include <memory>
 #include <cassert>
+
 #include <iostream>
+#include <iomanip>
+
+using std::cout;
+using std::endl;
 
 #define REGISTER_PTR(Ty) \
     using Ty##Ptr = shared_ptr<Ty>

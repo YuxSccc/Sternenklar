@@ -10,7 +10,7 @@ namespace ster {
         matrixPtr _initMat(new matrix(_GraphB->size(), _GraphA->size()));
         _initMat->fill(0.01);
         _Match(_initMat, DEFAULT_ITERATION_LIMIT);
-        return GSSM::matrix(*_PointMat);
+        return GSSM::matrix(_PointMat->transpose());
     }
 
     void GSSM::_Match(GSSM::matrixPtr &_initPointMat, uint32_t _maxIteration,
@@ -24,7 +24,6 @@ namespace ster {
                 break;
             }
         }
-        std::cout << *_PointMat << std::endl;
     }
 
     void GSSM::_InitMatStatus(GSSM::matrixPtr &_initPointMat) {

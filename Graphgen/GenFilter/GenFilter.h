@@ -16,7 +16,7 @@ namespace ster {
 
     class GenFilter {
     public:
-        virtual int Filter(vector<Instruction *> fil) = 0;
+        virtual int Filter(vector<Instruction *> &fil) = 0;
     };
 }
 

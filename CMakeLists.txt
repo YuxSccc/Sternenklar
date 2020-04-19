@@ -4,6 +4,7 @@ project(CodeSimilarity)
 set(CMAKE_CXX_STANDARD 17)
 
 add_compile_options(-Wall)
+set(CMAKE_BUILD_TYPE RELEASE)
 
 include_directories(
         .
