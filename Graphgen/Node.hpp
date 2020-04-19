@@ -34,7 +34,7 @@ namespace ster {
 
         size_t size() const { return _ins.size(); }
 
-        Instruction *getIns(int _index) const { return _ins[_index]; }
+        Instruction getIns(int _index) const { return *_ins[_index]; }
 
         inline int initNode(vector<Instruction *> &ins);
 

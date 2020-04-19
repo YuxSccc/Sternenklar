@@ -12,21 +12,27 @@ namespace ster {
     class Value {
     public:
         enum class Type {
-            ArrayTy,
-            VectorTy,
-            StructTy,
+            VoidTy = 0,
+            FloatTy,
+            IntegerTy,
             FunctionTy,
-            IntergerTy,
+            StructTy,
+            ArrayTy,
             PointerTy,
+            VectorTy,
+            OthersTy, // metadata, label, mmx
             Unknown
         };
 
     private:
         Value::Type _type;
-        std::string _name;
+        type_t _Typeid;
 
     private:
+
         int _weight;
+
+        std::string _name;
         bool _hasName;
 
     public:
@@ -39,24 +45,33 @@ namespace ster {
 
         inline Type getType() const { return _type; }
 
+        type_t getTypeid() const { return _Typeid; }
+
     };
 
     Value::Value(llvm::Value *val, int weight) {
         _weight = weight;
-        llvm::Type *Ty = val->getType();
-        if (Ty->isIntegerTy()) _type = Type::IntergerTy;
-        else if (Ty->isFunctionTy()) _type = Type::FunctionTy;
-        else if (Ty->isPointerTy()) _type = Type::PointerTy;
-        else if (Ty->isStructTy()) _type = Type::StructTy;
-        else if (Ty->isArrayTy()) _type = Type::ArrayTy;
-        else if (Ty->isVectorTy()) _type = Type::VectorTy;
-        else _type = Type::Unknown;
+        llvm::Type *_Ty = val->getType();
+        _Typeid = _Ty->getTypeID();
+        if (_Ty->isVoidTy()) { _type = Type::VoidTy; }
+        else if (_Ty->isIntegerTy()) { _type = Type::IntegerTy; }
+        else if (_Ty->isFunctionTy()) { _type = Type::FunctionTy; }
+        else if (_Ty->isPointerTy()) { _type = Type::PointerTy; }
+        else if (_Ty->isStructTy()) { _type = Type::StructTy; }
+        else if (_Ty->isArrayTy()) { _type = Type::ArrayTy; }
+        else if (_Ty->isVectorTy()) { _type = Type::VectorTy; }
+        else if (_Ty->isFloatingPointTy()) { _type = Type::FloatTy; }
+        else if (_Ty->isLabelTy() || _Ty->isMetadataTy() || _Ty->isTokenTy() ||
+                 _Ty->isX86_MMXTy()) { _type = Type::OthersTy; }
+        else { _type = Type::Unknown; }
         _hasName = val->hasName();
         if (val->hasName()) _name = val->getName().data();
+        assert(_type != Type::Unknown);
     }
 
     bool Value::operator==(const Value &_rhs) const {
         return _type == _rhs._type && _name == _rhs._name;
     }
+
 }
 #endif //CODESIMILARITY_VALUE_HPP

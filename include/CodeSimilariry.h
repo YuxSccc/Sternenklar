@@ -9,16 +9,19 @@
 #include <string>
 #include <memory>
 #include <cassert>
-
 #include <iostream>
-
-using std::vector;
-using std::string;
-
-using std::shared_ptr;
-using std::unique_ptr;
 
 #define REGISTER_PTR(Ty) \
     using Ty##Ptr = shared_ptr<Ty>
 
+namespace ster {
+
+    using std::vector;
+    using std::string;
+
+    using std::shared_ptr;
+    using std::unique_ptr;
+
+    using type_t = uint32_t;
+}
 #endif //CODESIMILARITY_CODESIMILARIRY_H

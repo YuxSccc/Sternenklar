@@ -5,13 +5,13 @@
 #ifndef CODESIMILARITY_KUHNMUNKRES_HPP
 #define CODESIMILARITY_KUHNMUNKRES_HPP
 
-#include "CodeSimilariry.h"
-
+#include <vector>
 #include <queue>
 #include <algorithm>
 
-class KuhnMunkres {
+using std::vector;
 
+class KuhnMunkres {
 private:
     enum class Type {
         UNMATCH = -1
@@ -24,8 +24,8 @@ private:
         int _matchIndex;
         vector<double> _edges;
 
-        explicit KM_Node(uint32_t _edgeCount) : _nodeWeight(0), _Visited(false),
-                                                _matchIndex((int) Type::UNMATCH) {
+        explicit KM_Node(size_t _edgeCount) : _nodeWeight(0), _Visited(false),
+                                              _matchIndex((int) Type::UNMATCH) {
             _edges.resize(_edgeCount, 0);
         }
 
@@ -115,7 +115,7 @@ private:
                 }
                 tempIndex++;
             }
-            for (int i = 0; i < _rightNodes.size(); ++i) {
+            for (size_t i = 0; i < _rightNodes.size(); ++i) {
                 auto &item = _rightNodes[i];
                 if (!item._Visited && _slack[i] == 0) {
                     item._Visited = true;
@@ -148,11 +148,11 @@ private:
     double _Match(vector<int> &_leftMatch) {
         _init_KM();
         _leftMatch.resize(_leftNodes.size());
-        for (int matchCount = 0; matchCount < _leftNodes.size(); ++matchCount) {
+        for (size_t matchCount = 0; matchCount < _leftNodes.size(); ++matchCount) {
             KM_bfs(matchCount);
         }
         double sumMatchWeight = 0;
-        for (int i = 0; i < _leftNodes.size(); ++i) {
+        for (size_t i = 0; i < _leftNodes.size(); ++i) {
             _leftMatch[i] = _leftNodes[i]._matchIndex;
             sumMatchWeight += _leftNodes[i]._nodeWeight + _rightNodes[_leftMatch[i]]._nodeWeight;
         }
@@ -187,7 +187,7 @@ private:
         double sumWeight = _Match(_leftMatch);
         if (swapFlag) {
             vector<int> newMatch(_rightCount, -1);
-            for (int i = 0; i < _leftMatch.size(); ++i) {
+            for (size_t i = 0; i < _leftMatch.size(); ++i) {
                 newMatch[_leftMatch[i]] = i;
             }
             std::swap(_leftMatch, newMatch);

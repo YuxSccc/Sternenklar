@@ -11,12 +11,13 @@
 #include "Similarity/utils/picosha2.hpp"
 #include "Similarity/utils/EditDistance.hpp"
 
-class SimHashMethod : public TextSimilarity {
-public:
-    double Calculate(const Node &, const Node &) override {
+namespace ster {
+    class SimHashMethod : public TextSimilarity {
+    public:
+        double Calculate(const Node &, const Node &) override {
 
-    }
-};
-
+        }
+    };
+}
 
 #endif //CODESIMILARITY_SIMHASHMETHOD_HPP

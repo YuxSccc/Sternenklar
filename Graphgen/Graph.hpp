@@ -36,6 +36,8 @@ namespace ster {
         inline ~Graph();
 
     public:
+        Node *getNodePtrAt(size_t index) const { return _nodes[index]; }
+
         size_t size() const { return _nodes.size(); }
 
         inline int initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges);
