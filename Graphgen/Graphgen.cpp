@@ -78,8 +78,13 @@ namespace ster {
             }
         }
 
+        if (Graph_nodes.empty()) {
+            LOG(WARNING) << "Can not parse any node in " << filename << "\n";
+            return nullptr;
+        }
+
         Graph_entry = Graph_nodes[0];
-        graph->initGraph(Graph_entry, Graph_nodes, Graph_edges);
+        graph->initGraph(Graph_entry, Graph_nodes, Graph_edges, filename);
         return graph;
     }
 

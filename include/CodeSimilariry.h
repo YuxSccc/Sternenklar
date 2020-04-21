@@ -11,7 +11,10 @@
 #include <cassert>
 
 #include <iostream>
-#include <iomanip>
+
+#include <functional>
+
+#include "glog/logging.h"
 
 using std::cout;
 using std::endl;
@@ -20,7 +23,6 @@ using std::endl;
     using Ty##Ptr = shared_ptr<Ty>
 
 namespace ster {
-
     using std::vector;
     using std::string;
 

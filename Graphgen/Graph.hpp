@@ -20,6 +20,8 @@ namespace ster {
 
     class Graph {
     private:
+        string _source_filename;
+
         Node *_entry;
         vector<Node *> _nodes;
         // TODO: maybe use pbds
@@ -36,11 +38,14 @@ namespace ster {
         inline ~Graph();
 
     public:
+        string get_source_filename() const { return _source_filename; }
+
         Node *getNodePtrAt(size_t index) const { return _nodes[index]; }
 
         size_t size() const { return _nodes.size(); }
 
-        inline int initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges);
+        inline int initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges,
+                             string _temp_source_filename);
 
         vector<std::pair<int, int>> GetCurrentIndexEdge() const {
             // Not Safe
@@ -76,7 +81,9 @@ namespace ster {
         }
     }
 
-    int Graph::initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges) {
+    int Graph::initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges,
+                         string _temp_source_filename) {
+        _source_filename = std::move(_temp_source_filename);
         _entry = entry;
         _nodes.swap(nodes);
         _edges.swap(edges);

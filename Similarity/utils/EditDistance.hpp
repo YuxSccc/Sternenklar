@@ -24,16 +24,16 @@ namespace ster {
         static const double _DeleteValueCost[magic_enum::enum_count<Value::Type>()];
 
     private:
-        double _TypeDistance(const Instruction &, const Instruction &) const;
+        inline double _TypeDistance(const Instruction &, const Instruction &) const;
 
-        double _ParamDistance(const Instruction &, const Instruction &) const;
+        inline double _ParamDistance(const Instruction &, const Instruction &) const;
 
     public:
         EditDistance() = default;
 
-        double getDistance(const Instruction &, const Instruction &) const;
+        inline double getDistance(const Instruction &, const Instruction &) const;
 
-        double getDistance(const Node &, const Node &) const;
+        inline double getDistance(const Node &, const Node &) const;
 
     };
 
@@ -115,7 +115,7 @@ namespace ster {
                                                                        (1 + normalize_dp_param * _rhsParams.size())));
     }
 
-    const double EditDistance::_DeleteValueCost[magic_enum::enum_count<Value::Type>()] = {
+    constexpr double EditDistance::_DeleteValueCost[magic_enum::enum_count<Value::Type>()] = {
             0.20,   // VoidTy
             0.20,   // FloatTy
             0.20,   // IntegerTy
