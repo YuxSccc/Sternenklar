@@ -10,6 +10,8 @@ namespace ster {
         const int _param_size = 11;
         _param_ptr.reset(new char *[_param_size + 1]);
         _alloca_string_at_index(0, _clang_path);
+        // _alloca_string_at_index(1, "-include");
+        // _alloca_string_at_index(2, "bits/stdc++.h");
         _alloca_string_at_index(1, "-fno-discard-value-names");
         _alloca_string_at_index(2, "-emit-llvm");
         _alloca_string_at_index(3, "-g");

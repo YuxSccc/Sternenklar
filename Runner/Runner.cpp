@@ -36,6 +36,7 @@ namespace ster {
             // child process
             int _exit_code = execvp(_run_path.data(), _config.get_param());
             LOG(FATAL) << "Child process error: EXIT CODE " << _exit_code << "\n";
+            return 0;
             // end
         } else {
             // main process
@@ -43,8 +44,9 @@ namespace ster {
             waitpid(_pid, &_child_status, 0);
             if (WIFEXITED(_child_status)) {
                 int _exit_status = WEXITSTATUS(_child_status);
-                LOG_IF(FATAL, _exit_status != 0) << "Exit status of the child was" << _exit_status << "\n"
+                LOG_IF(ERROR, _exit_status != 0) << "Exit status of the child was" << _exit_status << "\n"
                                                  << _config << "\n";
+                return _exit_status;
             }
         }
         return 0;

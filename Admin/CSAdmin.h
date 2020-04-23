@@ -31,8 +31,9 @@ namespace ster {
             }
 
             friend std::ostream &operator<<(std::ostream &os, const SimilarityResult &_sim) {
-                os << "{ CodeA:" << _sim._filename_A << "}  ";
-                os << "{ CodeB:" << _sim._filename_B << "}  Similarity = " << _sim._similarity * 100 << "%.";
+                os << "{ CodeA:" << get_filename_from_string(_sim._filename_A) << "}  ";
+                os << "{ CodeB:" << get_filename_from_string(_sim._filename_B) << "}  Similarity = "
+                   << _sim._similarity * 100 << "%.";
                 return os;
             }
         };
@@ -40,13 +41,14 @@ namespace ster {
     private:
         AdminConfig _config;
 
+        vector<string> _compile_fail_filename;
     public:
         void load_config(AdminConfig _config);
 
         void run();
 
         ~CSAdmin() {
-            _config.remove_temp_IR_folder();
+            // _config.remove_temp_IR_folder();
         }
     };
 }

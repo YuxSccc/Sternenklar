@@ -11,9 +11,7 @@
 #include <cassert>
 
 #include <iostream>
-
 #include <functional>
-
 #include "glog/logging.h"
 
 using std::cout;
@@ -30,5 +28,11 @@ namespace ster {
     using std::unique_ptr;
 
     using type_t = uint32_t;
+
+    inline static string get_filename_from_string(const string &_temp) {
+        auto _pos = _temp.find_last_of('/');
+        if (_pos == string::npos) return _temp;
+        else return _temp.substr(_pos + 1);
+    }
 }
 #endif //CODESIMILARITY_CODESIMILARIRY_H
