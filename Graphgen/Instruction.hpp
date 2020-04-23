@@ -13,8 +13,6 @@
 #include "llvm/IR/Instruction.def"
 #include "llvm/IR/InstrTypes.h"
 
-#define INSTRUCTION_TYPE_COUNT
-
 namespace ster {
     class Instruction {
     public:

@@ -22,7 +22,6 @@ namespace ster {
             string _filename_A;
             string _filename_B;
             double _similarity;
-            // vector<uint32_t> _matchid;
         public:
             SimilarityResult(string _lhs, string _rhs, double _sim) :
                     _filename_A(std::move(_lhs)), _filename_B(std::move(_rhs)), _similarity(_sim) {
@@ -37,7 +36,6 @@ namespace ster {
                 os << "{ CodeB:" << _sim._filename_B << "}  Similarity = " << _sim._similarity * 100 << "%.";
                 return os;
             }
-
         };
 
     private:

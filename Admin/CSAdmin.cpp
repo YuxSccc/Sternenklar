@@ -4,6 +4,7 @@
 
 #include "CSAdmin.h"
 
+#include "Runner/Runner.h"
 #include "Graphgen/Graphgen.h"
 #include "Similarity/Similarity.h"
 #include "Graphgen/GenFilter/DebugInstructionFilter.h"
