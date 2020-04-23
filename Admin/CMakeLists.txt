@@ -1,4 +1,4 @@
-set(SOURCE AdminConfig.cpp CSAdmin.cpp)
+set(SOURCE AdminConfig.cpp CSAdmin.cpp AdminConfig.h)
 
 add_library(Admin STATIC ${SOURCE})
 

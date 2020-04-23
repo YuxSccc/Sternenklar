@@ -72,6 +72,15 @@ namespace ster {
 
         inline const Value &getParam(size_t _index) const;
 
+        inline const Value &getCalledFunction() const {
+            LOG_IF(FATAL, _params.empty());
+            // TODO: fix phi is call function
+            if (_type != Type::CallInst) {
+                LOG(WARNING) << "Get called function from non-call instruction\n";
+            }
+            return *_params.rbegin();
+        }
+
         inline TopType getTopType() const;
 
         vector<Value> getParamsCopy() const {
@@ -91,16 +100,16 @@ namespace ster {
         }
         _Opcode = _ins.getOpcode();
         _classifyInstructionType(_ins);
-        assert(_type != Type::Unknown);
+        LOG_IF(FATAL, _type == Type::Unknown);
     }
 
     const Value &Instruction::getParam(size_t _index) const {
-        assert(_index < _params.size());
+        LOG_IF(FATAL, _index >= _params.size());
         return _params[_index];
     }
 
     void Instruction::_classifyInstructionType(const llvm::Instruction &_ins) {
-        switch (_Opcode) {
+        switch (_ins.getOpcode()) {
             // Terminators
             case llvm::Instruction::Ret:
             case llvm::Instruction::Br:

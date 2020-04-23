@@ -44,7 +44,11 @@ namespace ster {
                 vector<Instruction *> insList;
                 for (llvm::Instruction &I : BB) {
                     if (llvm::DILocation *Loc = I.getDebugLoc()) {
-                        if (Loc->getFilename() == M->getSourceFileName()) {
+                        string _loc_filename = Loc->getFilename();
+                        _loc_filename = _loc_filename.substr(_loc_filename.find_last_of('/') + 1);
+                        string _module_filename = M->getSourceFileName();
+                        _module_filename = _module_filename.substr(_module_filename.find_last_of('/') + 1);
+                        if (_module_filename == _loc_filename) {
                             insList.push_back(new Instruction(I));
                         }
                     }

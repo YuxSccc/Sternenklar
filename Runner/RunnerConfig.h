@@ -11,9 +11,9 @@ namespace ster {
     class RunnerConfig {
     private:
         static constexpr auto _deleter = [](char **_ptr) {
-            char *_begin = _ptr[0];
-            while (_begin != nullptr) {
-                delete[]_begin;
+            char **_begin = _ptr;
+            while (*_begin != nullptr) {
+                delete[]*_begin;
                 _begin++;
             }
             delete[]_ptr;
@@ -26,7 +26,7 @@ namespace ster {
     private:
         void _alloca_string_at_index(int _index, const string &_temp_str) {
             (_param_ptr.get())[_index] = new char[_temp_str.size() + 1];
-            _temp_str.copy((_param_ptr.get())[0], _temp_str.size(), 0);
+            _temp_str.copy((_param_ptr.get())[_index], _temp_str.size(), 0);
             (_param_ptr.get())[_index][_temp_str.size()] = 0;
         }
 
@@ -52,9 +52,9 @@ namespace ster {
                                        const string &_output_filename);
 
         friend std::ostream &operator<<(std::ostream &_os, const RunnerConfig &_temp) {
-            char *_begin = _temp._param_ptr.get()[0];
+            char **_begin = _temp._param_ptr.get();
             _os << "Params = ";
-            while (_begin != nullptr) {
+            while (*_begin != nullptr) {
                 _os << _begin << " ";
                 _begin++;
             }

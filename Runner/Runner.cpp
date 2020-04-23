@@ -15,10 +15,10 @@
 #include <cstdlib>
 
 namespace ster {
-    void Runner::run(const string &_run_path,
-                     const string &_input_file,
-                     const string &_output_file,
-                     Runner::RUN_MODE _mode) {
+    int Runner::run(const string &_run_path,
+                    const string &_input_file,
+                    const string &_output_file,
+                    Runner::RUN_MODE _mode) {
         RunnerConfig _config;
         switch (_mode) {
             case Runner::RUN_MODE::CLANG_COMPILE:
@@ -36,6 +36,7 @@ namespace ster {
             // child process
             int _exit_code = execvp(_run_path.data(), _config.get_param());
             LOG(FATAL) << "Child process error: EXIT CODE " << _exit_code << "\n";
+            // end
         } else {
             // main process
             int _child_status;
@@ -46,5 +47,6 @@ namespace ster {
                                                  << _config << "\n";
             }
         }
+        return 0;
     }
 }

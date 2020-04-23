@@ -15,10 +15,11 @@ namespace ster {
     }
 
     void CSAdmin::run() {
+        // TODO: add opt-9
+        // TODO: divide function
         clock_t enter_run_time = clock();
 
-        vector<GraphPtr> _graphPtr_list;
-        const vector<std::string> &_filename_list = _config.get_filename_list_refrence();
+        const vector<std::filesystem::path> &_source_list = _config.get_source_code_list_refrence();
         vector<GraphPtr> _graph_list;
 
         Graphgen _gen;
@@ -30,7 +31,21 @@ namespace ster {
         vector<SimilarityResult> _results;
 
         if (!_config.is_multithreading()) {
-            for (auto &_item : _filename_list) {
+            for (auto &_item:_source_list) {
+                Runner _runner;
+                std::filesystem::path _out_path = _config.get_IR_folder_path().string() + "/" +
+                                                  _item.filename().replace_extension("CSLL").string();
+                _runner.run(_config.get_compiler_path(),
+                            _item.string(),
+                            _out_path.string(),
+                            Runner::RUN_MODE::CLANG_COMPILE);
+
+                _config.add_IR_list_element(_out_path);
+            }
+
+            auto _IR_list = _config.get_IR_list_refrence();
+
+            for (auto &_item : _IR_list) {
                 auto _gPtr = _gen.gen(_item);
                 if (!_gPtr) {
                     LOG(WARNING) << "Gen graph for code " << _item << " failed, skip.\n";
@@ -41,15 +56,19 @@ namespace ster {
             }
             for (int i = 0; i < (int) _graph_list.size(); ++i) {
                 for (int j = i + 1; j < (int) _graph_list.size(); ++j) {
+                    LOG(INFO) << "Calculate similarity between " << _graph_list[i]->get_source_filename() << " and "
+                              << _graph_list[j]->get_source_filename()
+                              << " Start.\n";
                     _results.emplace_back(SimilarityResult(
                             _graph_list[i]->get_source_filename(), _graph_list[j]->get_source_filename(),
                             _sim.getSimilarity(_graph_list[i], _graph_list[j])));
                     LOG(INFO) << "Calculate similarity between " << _graph_list[i]->get_source_filename() << " and "
                               << _graph_list[j]->get_source_filename()
-                              << " successful.\n";
+                              << " successful.\n\n";
                 }
             }
         } else {
+            // TODO: dev multiprocessing
             assert(false);
         }
 

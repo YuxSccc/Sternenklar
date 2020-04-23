@@ -1,3 +1,3 @@
-set(SOURCE Runner.cpp RunnerConfig.cpp RunnerConfig.h)
+set(SOURCE Runner.cpp RunnerConfig.cpp)
 
 add_library(Runner STATIC ${SOURCE})

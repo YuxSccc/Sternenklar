@@ -42,6 +42,8 @@ namespace ster {
 
         Node *getNodePtrAt(size_t index) const { return _nodes[index]; }
 
+        bool empty() const { return size() == 0; }
+
         size_t size() const { return _nodes.size(); }
 
         inline int initGraph(Node *entry, vector<Node *> &nodes, std::unordered_map<Node *, vector<Node *>> &edges,

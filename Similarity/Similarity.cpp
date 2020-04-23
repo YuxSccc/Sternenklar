@@ -6,6 +6,10 @@
 
 namespace ster {
     double Similarity::getSimilarity(GraphPtr &_lhs, GraphPtr &_rhs) {
+        if (_lhs->empty() || _rhs->empty()) {
+            LOG(WARNING) << _lhs->get_source_filename() << " " << _rhs->get_source_filename() << " has empty Code\n";
+            return 0;
+        }
         shared_ptr<GraphSimilarity> GS(new GSSM(_lhs, _rhs));
         shared_ptr<TextSimilarity> TS(new EditDistanceMethod());
 

@@ -69,7 +69,7 @@ namespace ster {
         // both call instruction, need to check called function
         // TODO: more detailed detection (e.g push_back and emplace_back)
         // TODO: declare getCallfunction()
-        return _lhs.getParam(0) == _rhs.getParam(0);
+        return _lhs.getCalledFunction() == _rhs.getCalledFunction();
     }
 
     double EditDistance::_ParamDistance(const Instruction &_lhs, const Instruction &_rhs) const {

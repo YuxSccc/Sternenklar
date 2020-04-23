@@ -7,6 +7,10 @@
 
 namespace ster {
     GSSM::matrix GSSM::match() {
+        if (_PointMat->rows() == 0 || _PointMat->cols() == 0 || _EdgeMat->rows() == 0 || _EdgeMat->cols() == 0) {
+            _PointMat->fill(0.10);
+            return GSSM::matrix(_PointMat->transpose());
+        }
         matrixPtr _initMat(new matrix(_GraphB->size(), _GraphA->size()));
         _initMat->fill(0.01);
         _Match(_initMat, DEFAULT_ITERATION_LIMIT);

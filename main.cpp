@@ -8,6 +8,7 @@ ster::AdminConfig parseParam(int _argc, char *_argv[]) {
     options.add_options()
             ("j,jobs", "Multithreading, Number of threads", cxxopts::value<uint32_t>())
             ("f,folder", "Source code folder name", cxxopts::value<std::vector<std::string>>())
+            ("c,compiler", "Compiler path", cxxopts::value<std::string>()->default_value("clang++-9"))
             ("h,help", "Print usage");
 
     auto result = options.parse(_argc, _argv);
@@ -21,15 +22,21 @@ ster::AdminConfig parseParam(int _argc, char *_argv[]) {
     if (result.count("folder")) {
         std::vector<std::string> _folders = result["folder"].as<std::vector<std::string>>();
         for (const auto &_item : _folders) {
-            _config.add_filename_from_folder(_item);
+            _config.add_source_code_from_folder(_item);
         }
     }
+    _config.set_compiler_path(result["compiler"].as<std::string>());
     return _config;
 }
 
+#include <filesystem>
+
 int main(int argc, char *argv[]) {
+    cout << std::filesystem::current_path() << endl;
+
     ster::CSAdminPtr admin(new ster::CSAdmin());
     admin->load_config(parseParam(argc, argv));
     admin->run();
+
     return 0;
 }

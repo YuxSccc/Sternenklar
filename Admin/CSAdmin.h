@@ -9,7 +9,6 @@
 #include "Admin/AdminConfig.h"
 
 namespace ster {
-
     class CSAdmin;
 
     REGISTER_PTR(CSAdmin);
@@ -45,6 +44,10 @@ namespace ster {
         void load_config(AdminConfig _config);
 
         void run();
+
+        ~CSAdmin() {
+            _config.remove_temp_IR_folder();
+        }
     };
 }
 
