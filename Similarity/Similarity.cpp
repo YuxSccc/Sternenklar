@@ -27,7 +27,7 @@ namespace ster {
 
         vector<std::pair<int, int>> _edges;
         vector<double> weight;
-        vector<int> leftmatch;
+        vector<std::pair<int, double>> leftmatch;
 
         for (size_t i = 0; i < _lhs->size(); ++i) {
             for (size_t j = 0; j < _rhs->size(); ++j) {
