@@ -145,7 +145,7 @@ private:
         }
     }
 
-    double _Match(vector<int> &_leftMatch) {
+    double _Match(vector<std::pair<int, double>> &_leftMatch) {
         _init_KM();
         _leftMatch.resize(_leftNodes.size());
         for (size_t matchCount = 0; matchCount < _leftNodes.size(); ++matchCount) {
@@ -153,14 +153,15 @@ private:
         }
         double sumMatchWeight = 0;
         for (size_t i = 0; i < _leftNodes.size(); ++i) {
-            _leftMatch[i] = _leftNodes[i]._matchIndex;
-            sumMatchWeight += _leftNodes[i]._nodeWeight + _rightNodes[_leftMatch[i]]._nodeWeight;
+            double _match_weight = _leftNodes[i]._nodeWeight + _rightNodes[_leftNodes[i]._matchIndex]._nodeWeight;
+            _leftMatch[i] = std::make_pair(_leftNodes[i]._matchIndex, _match_weight);
+            sumMatchWeight += _match_weight;
         }
         return sumMatchWeight;
     }
 
     double _PreMatch(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
-                     const vector<double> &_edgeWeight, vector<int> &_leftMatch) {
+                     const vector<double> &_edgeWeight, vector<std::pair<int, double>> &_leftMatch) {
         {
             vector<KM_Node> tempa, tempb;
             std::swap(tempa, _leftNodes);
@@ -186,9 +187,9 @@ private:
         }
         double sumWeight = _Match(_leftMatch);
         if (swapFlag) {
-            vector<int> newMatch(_rightCount, -1);
+            vector<std::pair<int, double>> newMatch(_rightCount, std::make_pair(-1, -1));
             for (size_t i = 0; i < _leftMatch.size(); ++i) {
-                newMatch[_leftMatch[i]] = i;
+                newMatch[_leftMatch[i].first] = std::make_pair(i, _leftMatch[i].second);
             }
             std::swap(_leftMatch, newMatch);
         }
@@ -197,13 +198,13 @@ private:
 
 public:
     double Match(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
-                 const vector<double> &_edgeWeight, vector<int> &_leftMatch) {
+                 const vector<double> &_edgeWeight, vector<std::pair<int, double>> &_leftMatch) {
         return _PreMatch(_leftCount, _rightCount, _edgeIndex, _edgeWeight, _leftMatch);
     }
 
     double Match(size_t _leftCount, size_t _rightCount, const vector<std::pair<int, int>> &_edgeIndex,
                  const vector<double> &_edgeWeight) {
-        vector<int> temp;
+        vector<std::pair<int, double>> temp;
         return _PreMatch(_leftCount, _rightCount, _edgeIndex, _edgeWeight, temp);
     }
 };
