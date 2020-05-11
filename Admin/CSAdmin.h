@@ -31,11 +31,13 @@ namespace ster {
             }
 
             friend std::ostream &operator<<(std::ostream &os, const SimilarityResult &_sim) {
-                os << "{ CodeA:" << get_filename_from_string(_sim._filename_A) << "}  ";
-                os << "{ CodeB:" << get_filename_from_string(_sim._filename_B) << "}  Similarity = "
+                os << "{ CodeA:" << get_filename_from_dir(_sim._filename_A) << "}  ";
+                os << "{ CodeB:" << get_filename_from_dir(_sim._filename_B) << "}  Similarity = "
                    << _sim._similarity * 100 << "%.";
                 return os;
             }
+
+            double get_similarity() const { return _similarity; }
         };
 
     private:

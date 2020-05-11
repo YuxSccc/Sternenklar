@@ -25,7 +25,6 @@ namespace ster {
             }
             return matrix(*_initMat);
         }
-
     };
 }
 

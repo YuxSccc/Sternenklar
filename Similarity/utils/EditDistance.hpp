@@ -18,8 +18,10 @@
 namespace ster {
     class EditDistance {
         // strengthen by each Ins/param
-        static constexpr double normalize_dp_param = 0.02;
+        static constexpr double normalize_dp_param = 0.01;
         static constexpr double normalize_KMnode = 0.02;
+        static constexpr double similarity_between_instruction_limit = 0.40;
+
     private:
         static const double _DeleteValueCost[magic_enum::enum_count<Value::Type>()];
 
@@ -39,9 +41,12 @@ namespace ster {
 
     double EditDistance::getDistance(const Instruction &_lhs, const Instruction &_rhs) const {
         double _OpeSimilarity = _TypeDistance(_lhs, _rhs);
-        double _ParamSimilarity = _ParamDistance(_lhs, _rhs);
+        double _ParamDis = _ParamDistance(_lhs, _rhs);
         // TODO: should add weight compensation to _ParamSimilarity
-        return _OpeSimilarity * _ParamSimilarity;
+        double _ParamSimilarity =
+                1.0 - sqrt(_ParamDis / std::max(std::max(_lhs.getParamSize(), _rhs.getParamSize()), (size_t) 1));
+        double _InsSimilarity = _OpeSimilarity * _ParamSimilarity;
+        return _InsSimilarity < similarity_between_instruction_limit ? 0 : _InsSimilarity;
     }
 
     double EditDistance::getDistance(const Node &_lhs, const Node &_rhs) const {
@@ -54,10 +59,9 @@ namespace ster {
             }
         }
         KuhnMunkres _km;
-        size_t _maxInsCount = std::max(_lhs.size(), _rhs.size());
+        double _avgCount = (_lhs.size() + _rhs.size()) / 2.0;
         // TODO: choose better normalize function
-        return _km.Match(_lhs.size(), _rhs.size(), _edge, _weight)
-               / _maxInsCount * (normalize_KMnode * _maxInsCount + 1);
+        return _km.Match(_lhs.size(), _rhs.size(), _edge, _weight) / _avgCount;
     }
 
     double EditDistance::_TypeDistance(const Instruction &_lhs, const Instruction &_rhs) const {
@@ -111,21 +115,20 @@ namespace ster {
             }
         }
         // TODO: choose better normalize function
-        return _dp[_lhsParams.size()][_rhsParams.size()][0] / (0.01 + (_rhsParams.size() *
-                                                                       (1 + normalize_dp_param * _rhsParams.size())));
+        return _dp[_lhsParams.size()][_rhsParams.size()][0];
     }
 
     constexpr double EditDistance::_DeleteValueCost[magic_enum::enum_count<Value::Type>()] = {
-            0.20,   // VoidTy
-            0.20,   // FloatTy
-            0.20,   // IntegerTy
-            0.20,   // FunctionTy
-            0.20,   // StructTy
-            0.20,   // ArrayTy
-            0.20,   // PointerTy
-            0.20,   // VectorTy
-            0.20,   // OthersTy
-            0.00    // Unknown
+            0.60,   // VoidTy
+            0.60,   // FloatTy
+            0.60,   // IntegerTy
+            0.60,   // FunctionTy
+            0.60,   // StructTy
+            0.60,   // ArrayTy
+            0.60,   // PointerTy
+            0.60,   // VectorTy
+            0.60,   // OthersTy
+            0.60    // Unknown
     };
 }
 #endif //CODESIMILARITY_EDITDISTANCE_HPP

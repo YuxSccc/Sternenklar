@@ -21,7 +21,6 @@ namespace ster {
     class Graph {
     private:
         string _source_filename;
-
         Node *_entry;
         vector<Node *> _nodes;
         // TODO: maybe use pbds

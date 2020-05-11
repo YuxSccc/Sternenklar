@@ -6,15 +6,15 @@
 
 namespace ster {
     double TypeSimilarity::TypeSimilarityOfTwoInstruction(const Instruction &_lhs, const Instruction &_rhs) {
-        if (_lhs.getOpcode() == _rhs.getOpcode()) return SAME;
+        if (_lhs.getOpcode() == _rhs.getOpcode()) return 1 - SAME;
         if (_lhs.getType() == _rhs.getType()) return INSTRUCTION_SAME_TYPE_SIM;
-        if (_lhs.getTopType() != _rhs.getTopType()) return DIFFERENT;
+        if (_lhs.getTopType() != _rhs.getTopType()) return 1 - DIFFERENT;
         // lhs and rhs has same TTy below
         if (!_InstructionTopTypeHasSubType(_lhs.getTopType())) {
             return _instructionSameTTyInternalSimilarity[(type_t) _lhs.getTopType()];
         }
         // TODO: subtype similarity
-        return DIFFERENT;
+        return 1 - DIFFERENT;
     }
 
     double TypeSimilarity::TypeSimilarityOfTwoValue(const Value &_lhs, const Value &_rhs) {
@@ -40,12 +40,12 @@ namespace ster {
 
     // Measurement method: Probability of having same function when TTy and param is same
     const double TypeSimilarity::_instructionSameTTyInternalSimilarity[TypeSimilarity::Instruction_TopType_Count] = {
-            0.35,   // TerminatorInst
-            0.10,   // MathInst
-            0.15,   // LogicalOpeInst
-            0.30,   // MemoryInst
-            0.40,   // ConvertInst
-            0.05,   // OtherInst
+            0.45,   // TerminatorInst
+            0.20,   // MathInst
+            0.25,   // LogicalOpeInst
+            0.40,   // MemoryInst
+            0.50,   // ConvertInst
+            0.15,   // OtherInst
             0.00    // Unknown
     };
 }

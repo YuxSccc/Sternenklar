@@ -15,6 +15,8 @@ namespace ster {
     private:
         vector<Instruction *> _ins;
         std::string _name;
+        vector<std::pair<int, string>> _source_code;
+
     public:
         enum message {
             SUCCESS,
@@ -24,20 +26,20 @@ namespace ster {
     public:
         Node() = default;
 
-        inline explicit Node(vector<Instruction *> &ins, string &_tName);
+        inline explicit Node(vector<Instruction *> &ins, string &_tName, vector<std::pair<int, string>> _source_vector);
 
         Instruction *&operator[](int _index) { return _ins[_index]; }
 
         inline ~Node();
 
     public:
-
         size_t size() const { return _ins.size(); }
 
         Instruction getIns(int _index) const { return *_ins[_index]; }
 
         inline int initNode(vector<Instruction *> &ins);
 
+        const vector<std::pair<int, string>> &get_source_code() const { return _source_code; }
     };
 
 //----------------------------------------------------------------------------------------------------
@@ -48,9 +50,10 @@ namespace ster {
         }
     }
 
-    Node::Node(vector<Instruction *> &ins, string &_tName) {
+    Node::Node(vector<Instruction *> &ins, string &_tName, vector<std::pair<int, string>> _source_vector) {
         initNode(ins);
         _name = _tName;
+        _source_code = std::move(_source_vector);
     }
 
     int Node::initNode(vector<Instruction *> &ins) {

@@ -29,14 +29,17 @@ ster::AdminConfig parseParam(int _argc, char *_argv[]) {
     return _config;
 }
 
-#include <filesystem>
-
 int main(int argc, char *argv[]) {
-    cout << std::filesystem::current_path() << endl;
-
+    LOG(INFO) << "Current path is " << std::filesystem::current_path().string() << "\n";
+    /*
+    FLAGS_log_dir = std::filesystem::current_path().string() + "/log";
+    if (!std::filesystem::exists(FLAGS_log_dir)) {
+        std::filesystem::create_directory(FLAGS_log_dir);
+    }
+    google::InitGoogleLogging(argv[0]);
+    */
     ster::CSAdminPtr admin(new ster::CSAdmin());
     admin->load_config(parseParam(argc, argv));
     admin->run();
-
     return 0;
 }

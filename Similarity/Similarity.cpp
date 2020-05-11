@@ -5,7 +5,7 @@
 #include "Similarity.h"
 
 namespace ster {
-    double Similarity::getSimilarity(GraphPtr &_lhs, GraphPtr &_rhs) {
+    double Similarity::getSimilarity(GraphPtr &_lhs, GraphPtr &_rhs, vector<std::pair<int, double>> &_left_match) {
         if (_lhs->empty() || _rhs->empty()) {
             LOG(WARNING) << _lhs->get_source_filename() << " " << _rhs->get_source_filename() << " has empty Code\n";
             return 0;
@@ -21,13 +21,12 @@ namespace ster {
         for (size_t i = 0; i < _lhs->size(); ++i) {
             for (size_t j = 0; j < _rhs->size(); ++j) {
                 if (GraphMat(i, j) <= 0.001) GraphMat(i, j) = 0;
-                _tans(i, j) = (1 + GraphMat(i, j) / 5) * TextMat(i, j);
+                _tans(i, j) = (GraphMat(i, j) * 0) + (TextMat(i, j));
             }
         }
 
         vector<std::pair<int, int>> _edges;
         vector<double> weight;
-        vector<std::pair<int, double>> leftmatch;
 
         for (size_t i = 0; i < _lhs->size(); ++i) {
             for (size_t j = 0; j < _rhs->size(); ++j) {
@@ -36,8 +35,7 @@ namespace ster {
             }
         }
         KuhnMunkres t;
-        double match_val = t.Match(_lhs->size(), _rhs->size(), _edges, weight, leftmatch);
-
-        return match_val / (double) ((_lhs->size() + _rhs->size()) / 2);
+        double match_val = t.Match(_lhs->size(), _rhs->size(), _edges, weight, _left_match);
+        return match_val / (double) ((_lhs->size() + _rhs->size()) / 2.0);
     }
 }

@@ -54,7 +54,10 @@ private:
 private:
     void augment(int rightIndex) {
         _rightNodes[rightIndex]._matchIndex = _prevIndex[rightIndex];
-        if (_leftNodes[_prevIndex[rightIndex]].isMatched()) augment(_leftNodes[_prevIndex[rightIndex]]._matchIndex);
+        if (_leftNodes[_prevIndex[rightIndex]].isMatched()) {
+            assert(_leftNodes[_prevIndex[rightIndex]]._matchIndex != rightIndex);
+            augment(_leftNodes[_prevIndex[rightIndex]]._matchIndex);
+        }
         _leftNodes[_rightNodes[rightIndex]._matchIndex]._matchIndex = rightIndex;
     }
 

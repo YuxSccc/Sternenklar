@@ -8,6 +8,7 @@
 #include "Graphgen/Graphgen.h"
 #include "Similarity/Similarity.h"
 #include "Graphgen/GenFilter/DebugInstructionFilter.h"
+#include "Similarity/OutputAnalyzer/OutputAnalyzer.h"
 #include "sys/time.h"
 
 namespace ster {
@@ -37,12 +38,15 @@ namespace ster {
                 Runner _runner;
                 std::filesystem::path _out_path = _config.get_IR_folder_path().string() + "/" +
                                                   _item.filename().replace_extension("CSLL").string();
-                int _run_status = _runner.run(_config.get_compiler_path(),
+                int _run_status = 0;
+                if (!std::filesystem::exists(_out_path)) {
+                    _run_status = _runner.run(_config.get_compiler_path(),
                                               _item.string(),
                                               _out_path.string(),
                                               Runner::RUN_MODE::CLANG_COMPILE);
+                }
                 if (_run_status == 0) {
-                    _config.add_IR_list_element(_out_path);
+                    _config.add_IR_list_element(_out_path, _item);
                     LOG(INFO) << "Compile " << _item.filename() << " Success.\n";
                 } else {
                     _compile_fail_filename.push_back(_item.filename().string());
@@ -53,23 +57,31 @@ namespace ster {
             auto _IR_list = _config.get_IR_list_refrence();
 
             for (auto &_item : _IR_list) {
-                auto _gPtr = _gen.gen(_item);
+                auto _gPtr = _gen.gen(_item.first, _item.second);
                 if (!_gPtr) {
-                    LOG(WARNING) << "Gen graph for code " << _item << " failed, skip.\n";
+                    LOG(WARNING) << "Gen graph for code " << _item.second << " failed, skip.\n";
                     continue;
                 }
-                LOG(INFO) << "Gen graph for code " << _item << " successful.\n";
+                LOG_EVERY_N(INFO, 50) << "Gen graph for code " << _item.second << " successful.\n";
                 _graph_list.push_back(std::move(_gPtr));
             }
             for (int i = 0; i < (int) _graph_list.size(); ++i) {
                 for (int j = i + 1; j < (int) _graph_list.size(); ++j) {
+                    vector<std::pair<int, double>> _left_match;
+
                     _results.emplace_back(SimilarityResult(
                             _graph_list[i]->get_source_filename(), _graph_list[j]->get_source_filename(),
-                            _sim.getSimilarity(_graph_list[i], _graph_list[j])));
-                    LOG(INFO) << "Calculate similarity between "
-                              << get_filename_from_string(_graph_list[i]->get_source_filename()) << " and "
-                              << get_filename_from_string(_graph_list[j]->get_source_filename())
-                              << " successful.\n";
+                            _sim.getSimilarity(_graph_list[i], _graph_list[j], _left_match)));
+
+                    if (_results.rbegin()->get_similarity() > 0.85) {
+                        OutputAnalyzer::OutputAnalyzeImage(_graph_list[i], _graph_list[j], _left_match,
+                                                           _results.rbegin()->get_similarity());
+                    }
+
+                    LOG_EVERY_N(INFO, 50) << "Calculate similarity between "
+                                          << get_filename_from_dir(_graph_list[i]->get_source_filename()) << " and "
+                                          << get_filename_from_dir(_graph_list[j]->get_source_filename())
+                                          << " successful.\n";
                 }
             }
         } else {

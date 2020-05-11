@@ -10,12 +10,12 @@
 
 namespace ster {
     class TypeSimilarity {
-        static constexpr double SAME = 1.00;
+        static constexpr double SAME = 0.00;
         static constexpr double INSTRUCTION_SAME_TYPE_SIM = 0.90;
-        static constexpr double DIFFERENT = 0.00;
+        static constexpr double DIFFERENT = 1.00;
 
-        static constexpr double VALUE_SAME_TYPE_SIM = 0.90;
-        static constexpr double VALUE_INT_AND_FLOAT_SIM = 0.40;
+        static constexpr double VALUE_SAME_TYPE_SIM = 0.10;
+        static constexpr double VALUE_INT_AND_FLOAT_SIM = 0.60;
 
 
         static constexpr size_t Instruction_Type_Count = magic_enum::enum_count<Instruction::Type>();

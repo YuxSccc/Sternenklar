@@ -17,7 +17,7 @@ namespace ster {
 
         string _compiler_path;
         vector <std::filesystem::path> _source_code_list;
-        vector <std::filesystem::path> _IR_list;
+        vector <std::pair<std::filesystem::path, std::filesystem::path>> _IR_list;
         std::filesystem::path _IR_folder_path;
 
     public:
@@ -30,7 +30,9 @@ namespace ster {
 
         void set_compiler_path(string _temp_path) { _compiler_path = std::move(_temp_path); }
 
-        void add_IR_list_element(std::filesystem::path _temp_path) { _IR_list.push_back(std::move(_temp_path)); }
+        void add_IR_list_element(std::filesystem::path _temp_path, std::filesystem::path _source_code_path) {
+            _IR_list.push_back(std::move(std::make_pair(_temp_path, _source_code_path)));
+        }
 
         std::filesystem::path get_IR_folder_path() const { return _IR_folder_path; }
 
@@ -51,7 +53,8 @@ namespace ster {
 
         const vector <std::filesystem::path> &get_source_code_list_refrence() const { return _source_code_list; }
 
-        const vector <std::filesystem::path> &get_IR_list_refrence() const { return _IR_list; }
+        const vector <std::pair<std::filesystem::path, std::filesystem::path>> &
+        get_IR_list_refrence() const { return _IR_list; }
     };
 }
 

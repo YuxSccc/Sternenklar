@@ -7,7 +7,6 @@ set(CMAKE_CXX_FLAGS "-Wall")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
-
 if (${CMAKE_BUILD_TYPE} EQUAL DEBUG)
     set(DCMAKE_CXX_FLAGS ${DCMAKE_CXX_FLAGS} -pg)
     set(CMAKE_EXE_LINKER_FLAGS ${CMAKE_EXE_LINKER_FLAGS} -pg)
@@ -17,8 +16,12 @@ endif ()
 include_directories(
         .
         ./include
-        /usr/local/include/eigen3
+        /usr/include/eigen3
+        /usr/include/llvm-9
 )
+find_package(PkgConfig REQUIRED)
+
+pkg_check_modules(gvc REQUIRED IMPORTED_TARGET libgvc)
 
 link_directories(/usr/local/lib)
 
@@ -40,4 +43,5 @@ add_executable(CodeSimilarity main.cpp)
 
 target_link_libraries(CodeSimilarity
         Admin
+        PkgConfig::gvc
         )

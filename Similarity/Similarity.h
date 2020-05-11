@@ -15,7 +15,7 @@
 namespace ster {
     class Similarity {
     public:
-        double getSimilarity(GraphPtr &_lhs, GraphPtr &_rhs);
+        double getSimilarity(GraphPtr &_lhs, GraphPtr &_rhs, vector<std::pair<int, double>> &_left_match);
     };
 }
 

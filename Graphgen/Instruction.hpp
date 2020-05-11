@@ -66,7 +66,7 @@ namespace ster {
     public:
         Type getType() const { return _type; };
 
-        size_t paramSize() const { return _params.size(); }
+        size_t getParamSize() const { return _params.size(); }
 
         uint32_t getOpcode() const { return _Opcode; }
 
