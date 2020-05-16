@@ -15,7 +15,7 @@ namespace ster {
         _alloca_string_at_index(1, "-fno-discard-value-names");
         _alloca_string_at_index(2, "-emit-llvm");
         _alloca_string_at_index(3, "-g");
-        _alloca_string_at_index(4, "-O0");
+        _alloca_string_at_index(4, "-O1");
         _alloca_string_at_index(5, "-S");
         _alloca_string_at_index(6, "-Xclang");
         _alloca_string_at_index(7, "-disable-O0-optnone");

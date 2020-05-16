@@ -53,6 +53,7 @@ namespace ster {
         // main process
         // TODO: error handle
         for (llvm::Function &F : *M) {
+            if (F.getName() != "main" && F.use_empty()) continue;
             for (llvm::BasicBlock &BB: F) {
                 vector<Instruction *> insList;
                 std::map<Instruction *, int> _Ins_to_Line;
