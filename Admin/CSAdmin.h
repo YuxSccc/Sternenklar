@@ -50,7 +50,7 @@ namespace ster {
         void run();
 
         ~CSAdmin() {
-            // _config.remove_temp_IR_folder();
+            _config.remove_temp_IR_folder();
         }
     };
 }

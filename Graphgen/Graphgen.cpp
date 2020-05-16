@@ -22,7 +22,7 @@ namespace ster {
         return 0;
     }
 
-    GraphPtr Graphgen::gen(string filename, string _source_code_filename) const {
+    GraphPtr Graphgen::gen(string filename, string _source_code_filename, int &sourcecnt) const {
         GraphPtr graph(new Graph());
         // TODO: file class?
 
@@ -37,6 +37,7 @@ namespace ster {
             }
         }
         ifs.close();
+        sourcecnt += _graph_source_code.size();
 
         llvm::SMDiagnostic Err;
         llvm::LLVMContext Context;
@@ -53,6 +54,7 @@ namespace ster {
         // main process
         // TODO: error handle
         for (llvm::Function &F : *M) {
+            if (F.getName() != "main" && F.use_empty()) continue;
             for (llvm::BasicBlock &BB: F) {
                 vector<Instruction *> insList;
                 std::map<Instruction *, int> _Ins_to_Line;
@@ -65,6 +67,10 @@ namespace ster {
                             _Ins_to_Line[*insList.rbegin()] = Loc->getLine() - 1;
                         }
                     }
+                    /*
+                    insList.push_back(new Instruction(I));
+                    _Ins_to_Line[*insList.rbegin()] = 1;
+                    */
                 }
                 for (const GenFilterPtr &Filter : _Filters) {
                     Filter->Filter(insList);
