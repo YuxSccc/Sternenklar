@@ -15,7 +15,7 @@ namespace ster {
             LLVM_OPT
         };
     public:
-        int run(const string &_run_path, const string &_input_file, const string &_output_file, RUN_MODE _mode);
+        static int run(const string &_run_path, const string &_input_file, const string &_output_file, RUN_MODE _mode);
     };
 }
 

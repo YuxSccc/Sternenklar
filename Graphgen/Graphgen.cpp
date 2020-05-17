@@ -22,10 +22,8 @@ namespace ster {
         return 0;
     }
 
-    GraphPtr Graphgen::gen(string filename, string _source_code_filename) const {
-        GraphPtr graph(new Graph());
+    int Graphgen::gen(string filename, string _source_code_filename, GraphPtr &graph) const {
         // TODO: file class?
-
         vector<string> _graph_source_code;
         std::ifstream ifs;
         ifs.open(_source_code_filename);
@@ -42,7 +40,10 @@ namespace ster {
         llvm::LLVMContext Context;
         // Parse the input LLVM IR file into a module.
         std::unique_ptr<llvm::Module> Mod(parseIRFile(filename.c_str(), Err, Context));
-        if (!Mod) return nullptr;
+        if (!Mod) {
+            graph = nullptr;
+            return -1;
+        }
         llvm::Module *M = Mod.get();
 
         Node *Graph_entry = nullptr;
@@ -112,12 +113,13 @@ namespace ster {
 
         if (Graph_nodes.empty()) {
             LOG(WARNING) << "Can not parse any node in " << filename << "\n";
-            return nullptr;
+            graph = nullptr;
+            return -2;
         }
 
         Graph_entry = Graph_nodes[0];
         graph->initGraph(Graph_entry, Graph_nodes, Graph_edges, filename);
-        return graph;
+        return 0;
     }
 
     int Graphgen::removeFliter(size_t index) {

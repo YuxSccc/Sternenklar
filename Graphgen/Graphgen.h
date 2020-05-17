@@ -20,7 +20,7 @@ namespace ster {
 
         int removeFliter(size_t index);
 
-        GraphPtr gen(string filename, string _source_code_filename) const;
+        int gen(string filename, string _source_code_filename, GraphPtr &graph) const;
     };
 }
 #endif //CODESIMILARITY_GRAPHGEN_H
